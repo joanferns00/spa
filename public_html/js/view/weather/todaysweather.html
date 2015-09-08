@@ -1,0 +1,42 @@
+<div class="row clearfix">
+    <div class="col-fluid-1-2 amber">
+        <h2 class="text-center">{{info.dt | mydate}} {{info.dt| mytime}}</h2>
+        <div class="row clearfix">
+            <div class="col-fluid-1-2 text-center">
+                <span class="mainweathericon sunny"></span>
+                <h1>{{info.main.temp}}{{tempUnit}}</h1>
+                <p><strong>{{info.weather[0].description}}</strong></p>
+            </div>
+            <div class="col-fluid-1-2">
+                <p><strong>Humidity </strong> {{info.main.humidity}}%</p>
+                <p><strong>Cloudiness </strong> {{info.clouds.all}}%</p>
+                <p><strong>Wind </strong> {{info.wind.speed}}m/s {{info.wind.deg | mydirection}}</p>
+                <p><strong>Pressure </strong> {{info.main.pressure}}hpa</p>
+                <p><strong>Todays Max</strong> {{info.main.temp_max}}{{tempUnit}}</p>
+                <p><strong>Todays Min</strong> {{info.main.temp_min}}{{tempUnit}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row clearfix customHeight text-center lamber bwhite bodyFont">
+    <div class="col-fluid-1-3">
+        <!--rain-->
+        <span class="mainweathericon rain"></span>
+        <h5> {{i.rain? i.rain : 0}}%</h5>
+    </div>
+    <!--Precipitation-->
+    <!--    <div class="col-fluid-1-4">
+            <span class="mainweathericon precp"></span>
+            <h5>90%</h5>
+        </div>-->
+    <!--sunrise-->
+    <div class="col-fluid-1-3">
+        <span class="mainweathericon sunrise"></span>
+        <h5>{{info.sys.sunrise| mytime}}</h5>
+    </div>
+    <!--sunset-->
+    <div class="col-fluid-1-3">
+        <span class="mainweathericon sunset"></span>
+        <h5>{{info.sys.sunset| mytime}}</h5>
+    </div>
+</div>

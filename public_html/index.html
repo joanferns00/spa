@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html ng-app="MainApp">
+    <head>
+        <title>Single Page App using AngularJS</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="js/shrd/angular.min.js"></script>
+        <script type="text/javascript"  src="js/shrd/angular-route.min.js"></script>
+        <script type="text/javascript"  src="js/shrd/d3.js"></script>
+        <script type="text/javascript"  src="js/shrd/underscore.js"></script>
+        <base href="/spa/index.html">
+        <link rel="stylesheet" href="css/custom.css">
+    </head>
+    <body ng-controller="ListController">
+
+        <div class="wrapper">
+            <header>
+                <h2>SPA Application</h2>
+                <nav>
+                    <ul class="mainmenu">
+                        <li><a href="list"><i class="fa fa-home"></i> My List</a></li>
+                        <li><a href="weather"><i class="fa fa-shield"></i> Weather</a></li>
+                        <li><a href="photos"><i class="fa fa-comment"></i> Photos</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+            <!--MAIN CONTENT AND INJECTED VIEWS-->
+            <div  id="main">
+                <div ng-view="">
+                    <!--             angular templating
+                 this is where content will be injected -->
+                </div>
+            </div>
+        </div>
+
+
+        <!--Main router-->
+
+        <script src="js/app.js"></script>
+
+        <!--Controllers-->
+        <script src="js/ctrl/ListController.js"></script>
+        <script src="js/ctrl/WeatherController.js"></script>
+        <script src="js/ctrl/PhotoController.js"></script>
+
+        <!--Services-->
+        <script src="js/service/ListService.js"></script>
+        <script src="js/service/WeatherService.js"></script>
+
+        <!--Filters-->
+        <script src="js/filters/filters.js"></script>
+        <!--Common-->
+        <script src="js/helper/common.js"></script>
+
+        <!--Directives-->
+        <script src="js/directives/respChart.js"></script>
+        <script src="js/directives/simpleChart.js"></script>
+        <script src="js/directives/w5day.js"></script>
+        <script src="js/directives/w7day.js"></script>
+        <script src="js/directives/wToday.js"></script>
+        <script src="js/directives/weatherSix.js"></script>
+        <script src="js/directives/weatherToday.js"></script>
+    </body>
+</html>

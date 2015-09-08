@@ -1,0 +1,31 @@
+<h1 ng-bind="title"></h1>
+
+<!--Date: <input type="text"><br>-->
+<label>Enter Task </label><input ng-focus="reset()" ng-model="newItem.item" type="text" ng-enter="addItem()" >
+<button ng-click="addItem()">Add</button><span ng-bind="message"><strong></strong></span>
+
+<!--        <input ng-dblclick="makeIt(x)" type="text" ng-model="x"/>
+        <span ng-click="strikeIt(x)">Complete</span>-->
+<!--//Search in the list-->
+<br><br><br>
+<label>Search:&nbsp;&nbsp;&nbsp;&nbsp;</label><input ng-model="srchTsk"><br>
+<ol>
+    <!--//ng-dblclick="changeView(editMode)"-->
+    <li ng-repeat="x in tasks| filter: srchTsk"  ng-class="{'strikeOut': (x.status === true)}">
+        <p ng-hide="editMode[x.id]">
+            <input type="checkbox" ng-click="editStatus(x)"/>
+            <span ng-bind="x.item"
+                  ng-dblclick="changeView(x)"></span>
+            <a class="pointer" ng-click="delItem(x.id)">[X]</a>
+        </p>
+        <p ng-show="editMode[x.id]">
+            <input type="text" ng-blur="editItem(x);
+                                    changeView(x)" ng-model="x.item"/>
+        </p>
+
+    </li>
+</ol>
+
+<!--Sources
+http://jsfiddle.net/mrajcok/eTTZj/
+-->

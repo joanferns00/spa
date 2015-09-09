@@ -84,6 +84,7 @@
         WeatherService.getTodaysData($scope.selectedcity).then(
                 function (data) {
                     $scope.weather = data;
+
                     for (var key in data.main) {
                         if (key.indexOf("temp") !== -1) {
                             data.main[key] = Math.round(KToC(data.main[key], "C"));

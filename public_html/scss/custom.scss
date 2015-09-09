@@ -12,7 +12,7 @@ $blue: #03a9f4;
 $pink: #e91e63;
 $purple: #9c27b0;
 $indigo: #3f51b5;
-$colors: lighten($blue, 10%), lighten($green, 20%), lighten($indigo, 30%), lighten($pink, 30%), lighten($purple, 30%);
+$colors: rgb(31, 119, 180), rgb(255, 127, 14), lighten(rgb(44, 160, 44), 30%) , lighten(rgb(214, 39, 40), 30%), lighten(rgb(148, 103, 189), 30%);
 $i:0;
 
 /* resets */
@@ -62,20 +62,21 @@ h1, h2, h3, h4, h5, h6{
 .wrapper {
     margin: 0 auto;
     padding: 20px;
-    max-width: 95%;
+    max-width: 55%;
     background-color: #fff;
-    border: 1px solid red;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 1px #333;
 
     @media screen and (min-width: 1025px){
-        max-width: 95%;
+        max-width: 55%;
     }
 
     @media screen and (max-width: 1024px){
-        max-width: 95%;
+        max-width: 55%;
     }
 
     @media screen and (max-width: 980px) {
-        max-width: 95%;
+        max-width: 55%;
     }    
 
     @media screen and (max-width: 600px) {
@@ -590,6 +591,7 @@ span[class~="rain"]{
     &:hover{
         background-color: #333;
         color: #fff;
+        cursor: pointer;
     }
 }
 
@@ -826,3 +828,13 @@ ul.mainmenu
     stroke-width: 1.5px;
 }
 
+
+
+
+            #graph{
+                width: 100%;
+                height: 200%;
+                /*position: absolute;*/
+                border: 1px solid red;
+                /*display: block;*/
+            }

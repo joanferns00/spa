@@ -33,6 +33,14 @@
         return arr[ Math.abs(val) ];
     }
 
+    function gDate2(date) {
+        var now = new Date();
+        var hours = (new Date(date * 1000)).getHours();
+        var date = now.getDate();
+        var month = now.getMonth();
+        var d = new Date(2015, month, date, hours, 0, 0, 0);
+        return d;
+    }
 
     function gDate(date) {
         return new Date(date * 1000);
@@ -61,12 +69,9 @@
 
     }
     function FtoC(TF) {
-
         return ((TF - 32) / (9 / 5));
     }
 
     function CtoF(TC) {
-        console.log(((TC * 9 / 5) + 32));
         return ((TC * 9 / 5) + 32);
-
     }

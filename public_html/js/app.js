@@ -6,7 +6,7 @@
         $routeProvider
                 // route for the home page
                 .when('/list', {
-                    templateUrl: 'view/list.html',
+                    templateUrl: 'js/view/list.html',
                     controller: 'ListController'
                 })
                 .when('/index.html', {

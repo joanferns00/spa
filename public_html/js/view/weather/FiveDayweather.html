@@ -3,6 +3,18 @@
     <div ng-repeat="i in info.list" class="col-fixed-1-5">
         <h2 ng-if="$index == 0">Today</h2>
         <h2 ng-if="$index != 0">{{i.dt| myddate}}</h2>
-        <h4>{{i.dt| myday}}</h4><hr><h2>{{i.temp.max}}/{{i.temp.min}} &#8451;</h2>
+
+
+
+        <h4>{{i.dt| myday}}</h4>
+        <figure>
+            <img ng-src="http://openweathermap.org/img/w/{{i.weather[0].icon}}.png"
+                 title="{{i.weather[0].description}}"
+                 alt="{{i.weather[0].description}}">
+            <!--            <figcaption></figcaption>-->
+        </figure>
+        <small>{{i.weather[0].description}}</small>
+        <hr>
+        <h2>{{i.temp.max}}/{{i.temp.min}} {{tempUnit}}</h2>
     </div>
 </div>

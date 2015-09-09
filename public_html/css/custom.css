@@ -34,18 +34,19 @@ h1, h2, h3, h4, h5, h6 {
 .wrapper {
   margin: 0 auto;
   padding: 20px;
-  max-width: 95%;
+  max-width: 55%;
   background-color: #fff;
-  border: 1px solid red; }
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px #333; }
   @media screen and (min-width: 1025px) {
     .wrapper {
-      max-width: 95%; } }
+      max-width: 55%; } }
   @media screen and (max-width: 1024px) {
     .wrapper {
-      max-width: 95%; } }
+      max-width: 55%; } }
   @media screen and (max-width: 980px) {
     .wrapper {
-      max-width: 95%; } }
+      max-width: 55%; } }
   @media screen and (max-width: 600px) {
     .wrapper {
       max-width: 95%; } }
@@ -396,15 +397,15 @@ span[class~="rain"] {
   background-position: -25px -13px; }
 
 .menu1 div:nth-child(5n+1) {
-  background: #2ebcfc; }
+  background: #1f77b4; }
 .menu1 div:nth-child(5n+2) {
-  background: #66d35f; }
+  background: #ff7f0e; }
 .menu1 div:nth-child(5n+3) {
-  background: #abb4e2; }
+  background: #87de87; }
 .menu1 div:nth-child(5n+4) {
-  background: #f7a9c4; }
+  background: #efa7a7; }
 .menu1 div:nth-child(5n+5) {
-  background: #d88be5; }
+  background: #dfd2eb; }
 
 .menu1 > div {
   line-height: 1px;
@@ -416,7 +417,8 @@ span[class~="rain"] {
       }*/ }
   .menu1 > div:hover {
     background-color: #333;
-    color: #fff; }
+    color: #fff;
+    cursor: pointer; }
 
 .details {
   padding: 0px;
@@ -586,3 +588,10 @@ ul.mainmenu {
   fill: none;
   stroke: steelblue;
   stroke-width: 1.5px; }
+
+#graph {
+  width: 100%;
+  height: 200%;
+  /*position: absolute;*/
+  border: 1px solid red;
+  /*display: block;*/ }

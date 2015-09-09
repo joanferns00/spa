@@ -1,176 +1,253 @@
     /*
-     *  test
+     *  The 5-day weather chart
      */
-
-
-    app.directive("respChart", function ($window) {
+    app.directive("respChart", function ($window, WeatherService) {
 
         return{
             restrict: "EA",
-            template: "<svg></svg>",
+            template: "<svg id='graph'></svg>",
             link: function (scope, elem, attrs) {
+                //To empty the svg when the city or temp format has changed
+                function emptyLineChart() {
+                    d3.selectAll("svg#graph > *").remove();
+                }
+                var wd = scope[attrs.chartData];
+                //initialize the data
+                WeatherService.get5dayData(scope.selectedcity).then(
+                        function (data) {
+                            var dates = [];
+                            scope.dataset = [];
+                            var max = -200;
+                            var min = 500;
 
-                var data = [
-                    {
-                        date: new Date('December 1, 2015 00:00:00'),
-                        temp: 45
-                    },
-                    {
-                        date: new Date('December 1, 2015 06:00:00'),
-                        temp: 35
-                    },
-                    {
-                        date: new Date('December 1, 2015 12:00:00'),
-                        temp: 45
-                    },
-                    {
-                        date: new Date('December 1, 2015 18:00:00'),
-                        temp: 55
-                    },
-                    {
-                        date: new Date('December 2, 2015 00:00:00'),
-                        temp: 45
-                    },
-                    {
-                        date: new Date('December 2, 2015 06:00:00'),
-                        temp: 35
-                    },
-                    {
-                        date: new Date('December 2, 2015 12:00:00'),
-                        temp: 45
-                    },
-                    {
-                        date: new Date('December 2, 2015 18:00:00'),
-                        temp: 55
-                    },
-                    {
-                        date: new Date('December 3, 2015 00:00:00'),
-                        temp: 45
-                    },
-                    {
-                        date: new Date('December 3, 2015 06:00:00'),
-                        temp: 35
-                    },
-                    {
-                        date: new Date('December 3, 2015 12:00:00'),
-                        temp: 45
-                    },
-                    {
-                        date: new Date('December 3, 2015 18:00:00'),
-                        temp: 55
+
+                            //Get the 5 days
+                            //Get the max and min temperature
+                            data.list.forEach(function (d) {
+                                if (dates.indexOf(gd(d.dt)) === -1) {
+                                    dates.push(gd(d.dt));
+                                }
+                                if (KToC(d.main.temp, "C") > max)
+                                    max = KToC(d.main.temp, "C");
+
+                                if (KToC(d.main.temp, "C") < min)
+                                    min = KToC(d.main.temp, "C");
+                            });
+
+                            for (var i = 0; i < dates.length - 1; ++i) {
+                                scope.dataset[i] = new Array();
+                                data.list.forEach(function (d) {
+                                    if (dates[i] === gd(d.dt)) {
+                                        scope.dataset[i].push({x: gDate2(d.dt), y: KToC(d.main.temp, "C")});
+                                    }
+                                });
+                            }
+                            //draw the chart
+                            var chart = lineChart("graph")
+                                    .x(d3.time.scale().domain([
+                                        scope.dataset[scope.dataset.length - 1][0].x, scope.dataset[scope.dataset.length - 1][7].x
+                                                //        dataset[4][0].x, dataset[4][7].x
+                                    ]))
+                                    .y(d3.scale.linear().domain([min, max]));
+                            scope.dataset.forEach(function (series) {
+                                chart.addSeries(series);
+                            });
+                            //render the chart
+                            chart.render();
+                            //Add event for window resize to make the chart responsive
+                            d3.select(window).on('resize', resize);
+                            function resize() {
+                                var width = parseInt(d3.select("#graph").style("width")),
+                                        height = parseInt(d3.select("#graph").style("height"));
+                                chart.width(width).height(height).render();
+                            }
+                        },
+                        function (err) {
+                            console.log("Sorry we encountered an error " + err);
+                        }
+                );
+
+
+                //Redraw graph each time the city is changed
+                scope.$watch('selectedcity', function (nv, ov) {
+                    if (scope.lineData !== undefined) {
+                        if (nv && nv !== ov) {
+                            //call the weather data for the city.
+                            WeatherService.get5dayData(nv).then(
+                                    function (data) {
+                                        var dates = [];
+                                        scope.dataset = [];
+
+
+                                        var max = -200;
+                                        var min = 500;
+                                        //Get the 5 days
+                                        //Get the max and min temperature
+                                        data.list.forEach(function (d) {
+                                            if (dates.indexOf(gd(d.dt)) === -1) {
+                                                dates.push(gd(d.dt));
+                                            }
+
+
+                                            if (scope.tempformat === "C") {
+
+                                                if (KToC(d.main.temp, "C") > max)
+                                                    max = KToC(d.main.temp, "C");
+
+                                                if (KToC(d.main.temp, "C") < min)
+                                                    min = KToC(d.main.temp, "C");
+
+                                            }
+                                            if (scope.tempformat === "F") {
+                                                if (KToC(d.main.temp, "F") > max)
+                                                    max = KToC(d.main.temp, "F");
+
+                                                if (KToC(d.main.temp, "F") < min)
+                                                    min = KToC(d.main.temp, "F");
+                                            }
+
+
+                                        });
+
+                                        for (var i = 0; i < dates.length - 1; ++i) {
+                                            scope.dataset[i] = new Array();
+                                            data.list.forEach(function (d) {
+                                                if (dates[i] === gd(d.dt)) {
+                                                    if (scope.tempformat === "C") {
+                                                        scope.dataset[i].push({x: gDate2(d.dt), y: KToC(d.main.temp, "C")});
+                                                    }
+                                                    if (scope.tempformat === "F") {
+                                                        scope.dataset[i].push({x: gDate2(d.dt), y: KToC(d.main.temp, "F")});
+                                                    }
+                                                }
+                                            });
+                                        }
+
+                                        wd = scope[attrs.chartData];
+                                        emptyLineChart();
+
+                                        //draw the chart
+                                        var chart = lineChart("graph")
+                                                .x(d3.time.scale().domain([
+                                                    scope.dataset[scope.dataset.length - 1][0].x, scope.dataset[scope.dataset.length - 1][7].x
+                                                ]))
+                                                .y(d3.scale.linear().domain([min, max]));
+                                        scope.dataset.forEach(function (series) {
+                                            chart.addSeries(series);
+                                        });
+                                        //render the chart
+                                        chart.render();
+                                        //Add event for window resize to make the chart responsive
+                                        d3.select(window).on('resize', resize);
+                                        function resize() {
+                                            var width = parseInt(d3.select("#graph").style("width")),
+                                                    height = parseInt(d3.select("#graph").style("height"));
+                                            chart.width(width).height(height).render();
+                                        }
+                                    },
+                                    function (err) {
+                                        console.log("Sorry we encountered an error " + err);
+                                    }
+                            );
+                        }
                     }
-
-                ];
-
-//                var width = 1000, height = 500;
-                var width = 900, height = 200;
-                var margin = {top: 10, right: 10, bottom: 40, left: 40};
-                var svg;
-                var d3 = $window.d3;
-                var rawSvg = elem.find('svg');
-                var xScale, yScale, xAxisGen, yAxisGen, drawlinegraph;
-                var zoom;
-                var make_x_axis, make_y_axis;
-                var dots;
+                });
 
 
-                var d3 = $window.d3;
-                var rawSvg = elem.find('svg');
+//Each time the temperature format is change from C to F ro vice-versa
+                scope.$watch('tempformat', function (nv, ov) {
+                    if (scope.lineData !== undefined) {
+                        if (nv && nv !== ov) {
+
+                            /**
+                             * Working code
+                             */
+                            //call the weather data for the city.
+                            WeatherService.get5dayData(nv).then(
+                                    function (data) {
+                                        var dates = [];
+                                        scope.dataset = [];
+                                        var max = -200;
+                                        var min = 500;
+
+                                        //Get the 5 days
+                                        //Get the max and min temperature
+                                        data.list.forEach(function (d) {
+                                            if (dates.indexOf(gd(d.dt)) === -1) {
+                                                dates.push(gd(d.dt));
+                                            }
+
+                                            if (nv === "C") {
+                                                if (KToC(d.main.temp, "C") > max)
+                                                    max = KToC(d.main.temp, "C");
+
+                                                if (KToC(d.main.temp, "C") < min)
+                                                    min = KToC(d.main.temp, "C");
+                                            }
+                                            if (nv === "F") {
+                                                if (KToC(d.main.temp, "F") > max)
+                                                    max = KToC(d.main.temp, "F");
+
+                                                if (KToC(d.main.temp, "F") < min)
+                                                    min = KToC(d.main.temp, "F");
+                                            }
 
 
-                //X scale
-                xScale = d3.time.scale()
-                        .domain([
-                            d3.time.hour.offset(data[0].date.getHours(), -1),
-                            d3.time.hour.offset(data[data.length - 1].date.getHours(), 6)
-                        ])
-                        .rangeRound([0, width - margin.left - margin.right]);
-                //Y scale
-                yScale = d3.scale.linear()
-                        .domain([d3.min(data, function (d) {
-                                return d.temp;
-                            }), d3.max(data, function (d) {
-                                return d.temp;
-                            })])
-                        .range([height - margin.top - margin.bottom, 0]);
-
-                drawlinegraph = d3.svg.line()
-                        .x(function (d) {
-                            return xScale(d.date);
-                        })
-                        .y(function (d) {
-                            return yScale(d.temp);
-                        })
-                        .interpolate("cardinal");
-
-                svg = d3.select(rawSvg[0])
-                        .attr("preserveAspectRatio", "xMidYMid meet")
-                        .attr("viewBox", "0 0 " + width + " " + height + " ")
-                        .append('g')
-                        .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
-
-                make_x_axis = function () {
-                    return d3.svg.axis()
-                            .scale(xScale)
-                            .orient("bottom")
-                            .ticks(d3.time.hour, 3)
-                            .tickSize(-height + margin.top + margin.bottom, 0, 0)
-                            .tickPadding(1)
-                            ;
-                };
-
-                make_y_axis = function () {
-                    return  d3.svg.axis()
-                            .scale(yScale)
-                            .orient("left")
-                            .tickSize(-width + margin.left + margin.right, 0, 0)
-                            .ticks(10)
-                            ;
-                };
+                                        });
 
 
-                xAxisGen = d3.svg.axis()
-                        .scale(xScale)
-                        .orient("bottom")
-                        .ticks(d3.time.hour, 3)
+                                        for (var i = 0; i < dates.length - 1; ++i) {
+                                            scope.dataset[i] = new Array();
+                                            data.list.forEach(function (d) {
+                                                if (dates[i] === gd(d.dt)) {
+                                                    if (nv === "C") {
+                                                        scope.dataset[i].push({x: gDate2(d.dt), y: KToC(d.main.temp, "C")});
+                                                    }
+                                                    if (nv === "F") {
+                                                        scope.dataset[i].push({x: gDate2(d.dt), y: KToC(d.main.temp, "F")});
+                                                    }
+                                                }
+                                            });
+                                        }
 
-                        .tickSize(-height + margin.top + margin.bottom, 0, 0)
-                        .tickPadding(1)
-                        ;
-                yAxisGen = d3.svg.axis()
-                        .scale(yScale)
-                        .orient("left")
-                        .tickSize(-width + margin.left + margin.right, 0, 0)
-                        .ticks(10)
-                        ;
+                                        wd = scope[attrs.chartData];
+                                        emptyLineChart();
+                                        //draw the chart
+                                        var chart = lineChart("graph")
+                                                .x(d3.time.scale().domain([
+                                                    scope.dataset[scope.dataset.length - 1][0].x, scope.dataset[scope.dataset.length - 1][7].x
+                                                ]))
+                                                .y(d3.scale.linear().domain([min, max]));
+                                        scope.dataset.forEach(function (series) {
+                                            chart.addSeries(series);
+                                        });
+                                        //render the chart
+                                        chart.render();
+                                        //Add event for window resize to make the chart responsive
+                                        d3.select(window).on('resize', resize);
+                                        function resize() {
+                                            var width = parseInt(d3.select("#graph").style("width")),
+                                                    height = parseInt(d3.select("#graph").style("height"));
+                                            chart.width(width).height(height).render();
+                                        }
 
-                svg.append("svg:g")
-                        .attr("class", "x axis")
-                        .attr('transform', 'translate(0, ' + (height - margin.top - margin.bottom) + ')')
-                        .call(xAxisGen);
-                svg.append("svg:g")
-                        .attr("class", "y axis")
-                        .call(yAxisGen);
 
-                svg.append("svg:g")
-                        .attr("class", "x grid")
-                        .attr("transform", "translate(0," + height + ")")
-                        .call(make_x_axis()
-                                .tickSize(-height + margin.top + margin.bottom, 0, 0)
-                                .tickFormat(""));
+                                    },
+                                    function (err) {
+                                        console.log("Sorry we encountered an error " + err);
+                                    }
+                            );
 
-                svg.append("text")      // text label for the x axis
-                        .attr("x", width / 2)
-                        .attr("y", height - margin.bottom + 10)
-                        .text("Date");
+                            /**
+                             * Working code
+                             */
+                        }
 
-                svg.append("text")      // text label for the x axis
-                        .attr("transform", "translate(-25," + height / 2 + ")rotate(-90)")
-                        .text("Temperature (" + scope.tempformat + ")");
 
+                    }
+                });
 
 
             }
-        }
-        ;
+        };
     });

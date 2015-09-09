@@ -6,7 +6,7 @@
     app.directive('w7day', function (WeatherService) {
         return{
             restrict: 'E',
-            templateUrl: "js/view/weather/weatherSevenDayweather.html",
+            templateUrl: "js/view/weather/SevenDayweather.html",
             scope: {info: '=',
                 tempformat: '=',
                 selectedcity: '='
@@ -21,16 +21,28 @@
                             WeatherService.getData(nv, 7).then(
                                     function (data) {
                                         scope.info = data;
-                                        for (var key in data.main) {
-                                            if (key.indexOf("temp") !== -1) {
+                                        scope.info.list.forEach(function (ele, idx, arr) {
+                                            for (var key in ele.temp) {
                                                 if (scope.tempUnit === "C") {
-                                                    data.main[key] = Math.round(KToC(data.main[key], "C"));
+                                                    ele.temp[key] = Math.round(KToC(ele.temp[key], "C"));
                                                 }
                                                 else if (scope.tempUnit === "F") {
-                                                    data.main[key] = Math.round(KToC(data.main[key], "F"));
+                                                    ele.temp[key] = Math.round(KToC(ele.temp[key], "F"));
                                                 }
                                             }
-                                        }
+                                        });
+
+//                                        scope.info = data;
+//                                        for (var key in data.main) {
+//                                            if (key.indexOf("temp") !== -1) {
+//                                                if (scope.tempUnit === "C") {
+//                                                    data.main[key] = Math.round(KToC(data.main[key], "C"));
+//                                                }
+//                                                else if (scope.tempUnit === "F") {
+//                                                    data.main[key] = Math.round(KToC(data.main[key], "F"));
+//                                                }
+//                                            }
+//                                        }
                                     },
                                     function (err) {
                                         console.log("Sorry we encountered an error " + err);
@@ -46,20 +58,22 @@
                             if (nv === "C") {
                                 //C-272.15
                                 scope.tempUnit = "C";
-                                for (var key in scope.info.main) {
-                                    if (key.indexOf("temp") !== -1) {
-                                        scope.info.main[key] = Math.round(FtoC(scope.info.main[key], "C"));
+                                scope.info.list.forEach(function (ele, idx, arr) {
+                                    for (var key in ele.temp) {
+                                        ele.temp[key] = Math.round(FtoC(ele.temp[key], "C"));
                                     }
-                                }
+                                });
                             }
                             else if (nv === "F") {
                                 scope.tempUnit = "F";
+
                                 //(K × 1.8) - 459.67
-                                for (var key in scope.info.main) {
-                                    if (key.indexOf("temp") !== -1) {
-                                        scope.info.main[key] = Math.round(CtoF(scope.info.main[key], "C"));
+                                //for each element, change the value to F
+                                scope.info.list.forEach(function (ele, idx, arr) {
+                                    for (var key in ele.temp) {
+                                        ele.temp[key] = Math.round(CtoF(ele.temp[key], "C"));
                                     }
-                                }
+                                });
                             }
                         }
                     }
